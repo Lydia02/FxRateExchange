@@ -2,6 +2,7 @@ const axios = require('axios');
 const config = require('./configg');
 const { google } = require('googleapis');
 const OAuth2 = google.auth.OAuth2;
+require('dotenv').config()
 // Endpoint for fetching FX rates
 const getFxrates = async () => {
   try {
@@ -16,10 +17,11 @@ const getFxrates = async () => {
     throw error; // Re-throw the error to be handled elsewhere
   }
 };
-
+const clientId = process.env.clientId
+const clientSecret = process.env.clientSecret
 const oauth2Client = new OAuth2(
-  '454273591030-8aja7abvbsg0agb4d3vut03qenq0g7o5.apps.googleusercontent.com',
-  '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',
+  clientId,
+  clientSecret,
   'urn:ietf:wg:oauth:2.0:oob'
 );
 

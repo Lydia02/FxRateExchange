@@ -1,6 +1,6 @@
 const nodemailer = require('nodemailer');
 const { oauth2Client } = require('../utilis');
-
+require('dotenv').config();
 
 // Set up the Nodemailer transporter with OAuth2
 const transporter = nodemailer.createTransport({
@@ -8,8 +8,8 @@ const transporter = nodemailer.createTransport({
   auth: {
     type: 'OAuth2',
     user: 'ojoawolydia@gmail.com',
-    clientId: '454273591030-8aja7abvbsg0agb4d3vut03qenq0g7o5.apps.googleusercontent.com',
-    clientSecret: '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',
+    clientId: process.env.clientId,
+    clientSecret: process.env.clientSecret,
     refreshToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjY0ZGZlOTFlYmYwNDU4YTUwZWU2NmI5OCIsImVtYWlsIjoidXNlcjRAZ21haWwuY29tIn0sImlhdCI6MTY5MjQwNDUxMSwiZXhwIjoxNjkyNDA4MTExfQ.RWSNhmYOChdsmHJdzWBd3xWEd61KVQwIR-5x0nx3rgw', // Generate this after authorization
   },
 });
