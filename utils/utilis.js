@@ -1,5 +1,5 @@
 const axios = require('axios');
-const config = require('./configg');
+const config = require('../configg');
 const { google } = require('googleapis');
 const OAuth2 = google.auth.OAuth2;
 require('dotenv').config()
