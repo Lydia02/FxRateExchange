@@ -1,6 +1,4 @@
 # FxRateExchange
-Here is on we can start with.
-
 A web based application that allows users to:
 
 1. Register
@@ -12,5 +10,3 @@ A web based application that allows users to:
 4. SelectSelect at what price they want to get a notification (say dollar to naira is 800, as a user I should be able to request an email notification when if rises to 820 for example or falls to 750)
 
 5. ReceiveReceive email notification when due.
-
-I have done 1&2. Explain how I can implement 3-5 using nodejs I want the backend.
