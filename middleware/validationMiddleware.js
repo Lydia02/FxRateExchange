@@ -1,4 +1,3 @@
-// validationMiddleware.js
 const Joi = require('joi');
 
 const userValidationSchema = Joi.object({
@@ -17,17 +16,23 @@ const fxPreferenceValidationSchema = Joi.object({
 const validateUser = (req, res, next) => {
   req.body.email = req.body.email.toLowerCase();
   const { error } = userValidationSchema.validate(req.body);
+  
   if (error) {
-    return res.status(400).json({ error: error.details[0].message });
+    const validationErrors = error.details.map(detail => detail.message);
+    return res.status(400).json({ errors: validationErrors });
   }
+  
   next();
 };
 
 const validateFxPreference = (req, res, next) => {
   const { error } = fxPreferenceValidationSchema.validate(req.body);
+  
   if (error) {
-    return res.status(400).json({ error: error.details[0].message });
+    const validationErrors = error.details.map(detail => detail.message);
+    return res.status(400).json({ errors: validationErrors });
   }
+  
   next();
 };
 
