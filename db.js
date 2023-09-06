@@ -15,6 +15,3 @@ module.exports = (MONGO_URI) => {
 	console.log(err)
   })
 }
-
-//MONGO_URI = 'mongodb://localhost:27017/blogs'
-

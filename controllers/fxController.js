@@ -1,8 +1,8 @@
 const UserPreference = require("../models/fxModel");
-const FXController = require('../utilis.js'); // Import the FX controller
-const userModel = require("../models/userModel"); // Import the user model
-const emailNotifications = require('./rateController'); // Import the email module
-const { oauth2Client } = require('../utilis.js');
+const FXController = require('../utils/utilis.js'); 
+const userModel = require("../models/userModel"); 
+const emailNotifications = require('./emailNotificationController')
+const { oauth2Client } = require('../utils/utilis.js');
 
 // Save user's FX rate preference
 async function savePreference(req, res) {
@@ -44,7 +44,7 @@ async function checkAndNotify(userId, currencyPair, targetRate) {
     // Fetch current FX rates from your third-party source
     const fxRates = await FXController.getFxrates();
 
-    const currentRate = fxRates[currencyPair]; // Adjust this based on your FX rate data structure
+    const currentRate = fxRates[currencyPair]; 
 
     if (currentRate >= targetRate) {
       const user = await userModel.findById(userId);
@@ -53,7 +53,7 @@ async function checkAndNotify(userId, currencyPair, targetRate) {
 
         // Set up OAuth2 credentials for sending email
         oauth2Client.setCredentials({
-          refresh_token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjY0ZGZlOTFlYmYwNDU4YTUwZWU2NmI5OCIsImVtYWlsIjoidXNlcjRAZ21haWwuY29tIn0sImlhdCI6MTY5MjQwNDUxMSwiZXhwIjoxNjkyNDA4MTExfQ.RWSNhmYOChdsmHJdzWBd3xWEd61KVQwIR-5x0nx3rgw', // Replace with actual refresh token
+          refresh_token: 'REFRESH_TOKEN'
         });
 
         const subject = 'FX Rate Notification';
@@ -68,4 +68,3 @@ async function checkAndNotify(userId, currencyPair, targetRate) {
 
 module.exports = { savePreference, getPreferences, checkAndNotify };
 
-module.exports = { savePreference, getPreferences };
