@@ -10,7 +10,11 @@ const transporter = nodemailer.createTransport({
     user: 'ojoawolydia@gmail.com',
     clientId: process.env.clientId,
     clientSecret: process.env.clientSecret,
+//<<<<<<< HEAD:controllers/emailNotificationController.js
     refreshToken: 'REFRESH_TOKEN'
+//=======
+    //refreshToken: '', // Generate this after authorization
+//>>>>>>> main:controllers/rateController.js
   },
 });
 
