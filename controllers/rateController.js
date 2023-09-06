@@ -10,7 +10,7 @@ const transporter = nodemailer.createTransport({
     user: 'ojoawolydia@gmail.com',
     clientId: process.env.clientId,
     clientSecret: process.env.clientSecret,
-    refreshToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjY0ZGZlOTFlYmYwNDU4YTUwZWU2NmI5OCIsImVtYWlsIjoidXNlcjRAZ21haWwuY29tIn0sImlhdCI6MTY5MjQwNDUxMSwiZXhwIjoxNjkyNDA4MTExfQ.RWSNhmYOChdsmHJdzWBd3xWEd61KVQwIR-5x0nx3rgw', // Generate this after authorization
+    refreshToken: '', // Generate this after authorization
   },
 });
 
