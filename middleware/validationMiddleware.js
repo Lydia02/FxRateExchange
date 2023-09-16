@@ -1,4 +1,5 @@
 const Joi = require('joi');
+const ErrorHandler = require('../middleware/errorHandler'); // Import the error handler
 
 const userValidationSchema = Joi.object({
   firstname: Joi.string(),
@@ -14,25 +15,27 @@ const fxPreferenceValidationSchema = Joi.object({
 });
 
 const validateUser = (req, res, next) => {
-  req.body.email = req.body.email.toLowerCase();
   const { error } = userValidationSchema.validate(req.body);
-  
+  req.body.email = req.body?.email?.toLowerCase();
+
   if (error) {
-    const validationErrors = error.details.map(detail => detail.message);
-    return res.status(400).json({ errors: validationErrors });
+    const validationErrors = error.details.map((detail) => detail.message);
+    // Create and pass an AppError to the error handling middleware
+    return next(new ErrorHandler(validationErrors.join(', '), 400));
   }
-  
+
   next();
 };
 
 const validateFxPreference = (req, res, next) => {
   const { error } = fxPreferenceValidationSchema.validate(req.body);
-  
+
   if (error) {
-    const validationErrors = error.details.map(detail => detail.message);
-    return res.status(400).json({ errors: validationErrors });
+    const validationErrors = error.details.map((detail) => detail.message);
+    // Create and pass an AppError to the error handling middleware
+    return next(new ErrorHandler(validationErrors.join(', '), 400));
   }
-  
+
   next();
 };
 
