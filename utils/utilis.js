@@ -9,8 +9,13 @@ const getFxrates = async () => {
     const response = await axios.get(
       `http://data.fixer.io/api/latest?access_key=${config.fixerApiKey}`
     );
-
+   // console.log('api key', config.fixerApiKey)
+if (response.data.success !== true) {
+      throw new Error('Error fetching FX rates');
+    }
     const fxRates = response.data.rates;
+  
+    console.log('response.data.rates', response.data)
     return fxRates;
   } catch (error) {
     console.error('Error fetching FX rates:', error);

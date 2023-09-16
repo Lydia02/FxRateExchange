@@ -1,6 +1,7 @@
 const nodemailer = require('nodemailer');
 const { oauth2Client } = require('../utils/utilis');
 require('dotenv').config();
+const ErrorHandler = require('../middleware/errorHandler');
 
 // Set up the Nodemailer transporter with OAuth2
 const transporter = nodemailer.createTransport({
@@ -10,11 +11,7 @@ const transporter = nodemailer.createTransport({
     user: 'ojoawolydia@gmail.com',
     clientId: process.env.clientId,
     clientSecret: process.env.clientSecret,
-//<<<<<<< HEAD:controllers/emailNotificationController.js
-    refreshToken: 'REFRESH_TOKEN'
-//=======
-    //refreshToken: '', // Generate this after authorization
-//>>>>>>> main:controllers/rateController.js
+    refreshToken: 'REFRESH_TOKEN', 
   },
 });
 
@@ -22,16 +19,16 @@ const transporter = nodemailer.createTransport({
 const sendEmail = async (to, subject, text) => {
   const mailOptions = {
     from: 'xyz@gmail.com',
-    to: 'xyw@gmail.com',
-    subject: 'Rate Notification!',
-    text: "The new rate"
+    to, 
+    subject,
+    text,
   };
 
   try {
     await transporter.sendMail(mailOptions);
     console.log('Email sent successfully');
   } catch (error) {
-    console.error('Error sending email:', error);
+    throw new ErrorHandler('Error sending email', 500); 
   }
 };
 
