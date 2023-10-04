@@ -1,13 +1,13 @@
 const mongoose = require('mongoose');
 
 const userPreferenceSchema = new mongoose.Schema({
-  userId: {
-    type: String,
-    required: true,
-  },
+ //userId: {
+   //type: String,
+  // required: true,
+  //},
   currencyPair: {
     type: String,
-    required: true,
+   // required: true,
   },
   targetRate: {
     type: Number,

@@ -1,43 +1,37 @@
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
-const ErrorHandler = require('../middleware/errorHandler');
+const { tryCatch } = require('../errors/tryCatch'); // Update the path to your tryCatch.js file
+//const ErrorHandler = require('../errors/AppError');
+const AppError = require('../errors/AppError');
 
-exports.signUp = async (req, res, next) => {
+exports.signUp = tryCatch(async (req, res) => {
   const body = { _id: req.user._id, email: req.user.email };
-  try {
-    res.json({
-      message: 'Signup successful',
-      user: req.user,
-    });
-  } catch (err) {
-    //handling middleware
-    return next(new ErrorHandler(err.message, 500));
-  }
-};
+  res.json({
+    message: 'Signup successful',
+    user: req.user,
+  });
+});
 
-exports.login = async (req, res, next) => {
+exports.login = tryCatch(async (req, res) => {
   passport.authenticate('login', async (err, user, info) => {
-    try {
-      if (err) {
-        return next(err);
-      }
-      if (!user) {
-        const error = new ErrorHandler('Username or password is incorrect', 401);
-        return next(error);
-      }
-      req.login(user, { session: false }, async (error) => {
-        if (error) return next(error);
-        const body = { _id: user._id, email: user.email };
-        const token = jwt.sign({ user: body }, process.env.JWT_SECRET, {
-          expiresIn: '1hr',
-        });
-        return res.json({
-          token: token,
-          userID: req.user._id,
-        });
-      });
-    } catch (err) {
-      return next(new ErrorHandler(err.message, 500));
+    if (err) throw err;
+
+    if (!user) {
+      throw new AppError('Username or password is incorrect', 401);
     }
-  })(req, res, next);
-};
+
+    req.login(user, { session: false }, async (error) => {
+      if (error) throw error;
+
+      const body = { _id: user._id, email: user.email };
+      const token = jwt.sign({ user: body }, process.env.JWT_SECRET, {
+        expiresIn: '1hr',
+      });
+
+      res.json({
+        token: token,
+        userID: req.user._id,
+      });
+    });
+  })(req, res);
+});

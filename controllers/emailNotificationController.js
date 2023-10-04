@@ -1,7 +1,8 @@
 const nodemailer = require('nodemailer');
 const { oauth2Client } = require('../utils/utilis');
 require('dotenv').config();
-const ErrorHandler = require('../middleware/errorHandler');
+//const ErrorHandler = require('../middleware/errorHandler');
+const AppError = require('../errors/AppError');
 
 // Set up the Nodemailer transporter with OAuth2
 const transporter = nodemailer.createTransport({
@@ -28,7 +29,7 @@ const sendEmail = async (to, subject, text) => {
     await transporter.sendMail(mailOptions);
     console.log('Email sent successfully');
   } catch (error) {
-    throw new ErrorHandler('Error sending email', 500); 
+    throw new AppError('Error sending email', 500); 
   }
 };
 

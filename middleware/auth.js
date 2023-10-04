@@ -5,7 +5,7 @@ const ExtractJWT = require("passport-jwt").ExtractJwt;
 const localStrategy = require("passport-local").Strategy;
 require("dotenv").config();
 const userModel = require("../models/userModel");
-const ErrorHandler = require("./errorHandler"); 
+const AppError = require("../errors/AppError"); 
 
 module.exports = function (passport) {
   passport.use(
@@ -18,7 +18,7 @@ module.exports = function (passport) {
         try {
           return done(null, token.user);
         } catch (error) {
-            throw new ErrorHandler('Error', 500); 
+            throw new AppError('Error', 500); 
           }
       }
     )
@@ -43,7 +43,7 @@ module.exports = function (passport) {
           });
           return done(null, user);
         } catch (error) {
-            throw new ErrorHandler('Error', 500); 
+            throw new AppError('Error', 500); 
           }
       }
     )
@@ -72,7 +72,7 @@ module.exports = function (passport) {
 
           return done(null, user, { message: "Logged in Successfully" });
         } catch (error) {
-            throw new ErrorHandler('Error', 500); 
+            throw new AppError('Error', 500); 
           };
         
       }
