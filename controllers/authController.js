@@ -1,37 +1,46 @@
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
-const { tryCatch } = require('../errors/tryCatch'); // Update the path to your tryCatch.js file
-//const ErrorHandler = require('../errors/AppError');
-const AppError = require('../errors/AppError');
+const { CustomAPIError } = require('../errors'); // Import your custom error class
 
-exports.signUp = tryCatch(async (req, res) => {
-  const body = { _id: req.user._id, email: req.user.email };
-  res.json({
-    message: 'Signup successful',
-    user: req.user,
-  });
-});
-
-exports.login = tryCatch(async (req, res) => {
-  passport.authenticate('login', async (err, user, info) => {
-    if (err) throw err;
-
-    if (!user) {
-      throw new AppError('Username or password is incorrect', 401);
-    }
-
-    req.login(user, { session: false }, async (error) => {
-      if (error) throw error;
-
-      const body = { _id: user._id, email: user.email };
-      const token = jwt.sign({ user: body }, process.env.JWT_SECRET, {
-        expiresIn: '1hr',
-      });
-
-      res.json({
-        token: token,
-        userID: req.user._id,
-      });
+exports.signUp = async (req, res) => {
+  try {
+    const body = { _id: req.user._id, email: req.user.email };
+    res.json({
+      message: 'Signup successful',
+      user: req.user,
     });
+  } catch (error) {
+    // Handle the error here
+    res.status(500).json({ error: error.message });
+  }
+};
+
+exports.login = async (req, res) => {
+  passport.authenticate('login', async (err, user, info) => {
+    try {
+      if (err) throw err;
+
+      if (!user) {
+        // Use your custom BadRequestError here
+        throw new CustomAPIError('Username or password is incorrect');
+      }
+
+      req.login(user, { session: false }, async (error) => {
+        if (error) throw error;
+
+        const body = { _id: user._id, email: user.email };
+        const token = jwt.sign({ user: body }, process.env.JWT_SECRET, {
+          expiresIn: '1hr',
+        });
+
+        res.json({
+          token: token,
+          userID: req.user._id,
+        });
+      });
+    } catch (error) {
+      // Handle the error here
+      res.status(500).json({ error: error.message });
+    }
   })(req, res);
-});
+};

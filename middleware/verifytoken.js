@@ -12,11 +12,11 @@ const splitToken = token.split(' ')[1]
 
   jwt.verify(splitToken, process.env.JWT_SECRET, (err, decoded) => {
     if (err) {
-        console.log(err)
+      //  console.log(err)
       return res.status(401).json({ message: 'Unauthorized: Invalid token' });
     }
 console.log(decoded)
-    req.userId = decoded.user._id; // Attach the user ID to the request object
+    req.userId = decoded.user._id;
     next();
   });
 }

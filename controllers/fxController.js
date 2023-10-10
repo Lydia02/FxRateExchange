@@ -3,8 +3,11 @@ const FXController = require('../utils/utilis.js');
 const userModel = require("../models/userModel"); 
 const emailNotifications = require('./emailNotificationController')
 const { oauth2Client } = require('../utils/utilis.js');
-const AppError = require('../errors/AppError'); 
-
+const {
+  BadRequestError,
+  NotFoundError,
+  UnauthorisedError
+} = require("../errors")
 const mongoose = require('mongoose');
 const ObjectId = mongoose.Types.ObjectId;
 
@@ -14,9 +17,7 @@ async function savePreference(req, res, next) {
     const { currencyPair, targetRate } = req.body || {};
     
     if (!currencyPair || !targetRate) {
-      return res.status(400).json({ 
-        error: 'Invalid request body'
-      });
+      throw new BadRequestError('Invalid request body');
     }
 
     const preference = new UserPreference({
@@ -35,61 +36,54 @@ async function savePreference(req, res, next) {
       data: newPreference,
     });
   } catch (error) {
-    next(new AppError('Something went wrong', 401));
+    next(error); // Use the custom error class
   }
 }
 
-// // Get user's FX rate preferences
+// Get user's FX rate preferences
 async function getPreferences(req, res, next) {
- 
-
-  
   try {
     const id = req.userId;
 
     const preferences = await UserPreference.find({ id });
     res.status(200).json(preferences);
   }  catch (error) {
-  console.error('Error fetching preferences:', error);
-  next(new AppError('Error fetching preferences', 500)); 
+    next(new NotFoundError('Error fetching preferences'));
+  }
 }
-// catch (error) {
-//     next( new AppError('Error fetching preferences', 500)); 
-//   }
-}
+
+// Get user's FX rate preferences by ID
 async function getPreferencesById(req, res, next) {
   try {
     const { id } = req.params;
 
     if (!ObjectId.isValid(id)) {
-      return res.status(400).json({ error: 'Invalid ID format' });
+      throw new BadRequestError('Invalid ID format');
     }
 
-    const preferencesById = await UserPreference.findById(id); // Use _id field for searching
+    const preferencesById = await UserPreference.findById(id);
 
     if (!preferencesById) {
-      return res.status(404).json({ error: 'Preference not found' });
+      throw new NotFoundError('Preference not found');
     }
 
     res.status(200).json(preferencesById);
-    console.log(preferencesById);
   } catch (error) {
-    console.error('Error fetching preferences:', error);
-    next(new AppError('Error fetching preferences', 500)); 
+    next(error);
   }
 }
 
+// Update user's FX rate preference
 async function updatePreference(req, res, next) {
   try {
     const { id } = req.params;
-    console.log(id);
     const { currencyPair, targetRate } = req.body;
 
     // Check if the preference exists
     const existingPreference = await UserPreference.findByIdAndUpdate(id);
 
     if (!existingPreference) {
-      return res.status(404).json({ error: 'Preference not found' });
+      throw new NotFoundError('Preference not found');
     }
 
     // Update the preference fields
@@ -101,42 +95,40 @@ async function updatePreference(req, res, next) {
 
     res.status(200).json(updatedPreference);
   } catch (error) {
-    console.error('Error updating preference:', error);
-    next(new AppError('Error updating preference', 500)); 
+    next(error);
   }
 }
+
+// Delete user's FX rate preference by ID
 async function deletePreferenceById(req, res, next) {
   try {
     const { id } = req.params;
 
     if (!ObjectId.isValid(id)) {
-      return res.status(400).json({ error: 'Invalid ID format' });
+      throw new BadRequestError('Invalid ID format');
     }
 
     // Check if the preference exists
     const existingPreference = await UserPreference.findById(id);
 
     if (!existingPreference) {
-      return res.status(404).json({ error: 'Preference not found' });
+      throw new NotFoundError('Preference not found');
     }
 
     // Delete the preference
     await UserPreference.findByIdAndDelete(id);
 
-    res.status(201).json('Deleted successfully'); // Respond with a 204 No Content status on successful deletion
+    res.status(201).json('Deleted successfully');
   } catch (error) {
-    console.error('Error deleting preference:', error);
-    next(new AppError('Error deleting preference', 500)); 
+    next(error);
   }
 }
-
 
 // Function to check FX rates and send email notifications
 async function checkAndNotify(userId, currencyPair, targetRate, res, next) {
   try {
     // Fetch current FX rates from your third-party source
     const fxRates = await FXController.getFxrates();
-    console.log(fxRates);
     const currentRate = fxRates[currencyPair]; 
 
     if (currentRate >= targetRate) {
@@ -155,8 +147,8 @@ async function checkAndNotify(userId, currencyPair, targetRate, res, next) {
       }
     }
   } catch (error) {
-    next(new AppError('Error checking and notifying', 500)); 
+    next(new NotFoundError('Error checking and notifying'));
   }
 }
 
-module.exports = { savePreference, getPreferences, getPreferencesById,updatePreference, deletePreferenceById,checkAndNotify };
+module.exports = { savePreference, getPreferences, getPreferencesById, updatePreference, deletePreferenceById, checkAndNotify };

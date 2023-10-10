@@ -3,7 +3,7 @@ const express = require('express');
 const passport = require('passport')
 const bodyParser = require('body-parser');
 const userRoute = require('./routes/authRoutes')
-const errorHandler = require('./errors/AppError'); 
+//const errorHandler = require('./errors'); 
 const configureRateLimit = require('./utils/rateLimit')
 const fxRatesRoutes = require('./routes/fxRoute');
 require("./middleware/auth")(passport)
@@ -21,6 +21,6 @@ app.use('/api', passport.authenticate('jwt', { session:false }), fxRatesRoutes)
 
 app.use('/', userRoute);
 // app.use('/api', fxRatesRoutes);
-app.use(errorHandler);
+//app.use(errorHandler);
 
 module.exports = app

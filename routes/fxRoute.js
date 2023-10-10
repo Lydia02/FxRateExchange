@@ -8,9 +8,9 @@ const verifyToken = require('../middleware/verifytoken');
 fxRouter.use(verifyToken);
 
 fxRouter.post('/user/preference', validateFxPreference, fxRatesController.savePreference);
-fxRouter.get('/user/preferences/userId', validateFxPreference, fxRatesController.getPreferences);
+fxRouter.get('/user/preference', validateFxPreference, fxRatesController.getPreferences);
 fxRouter.get('/user/preference', validateFxPreference,fxRatesController.getPreferencesById);
-fxRouter.put('/user/preference/:id', validateFxPreference, fxRatesController.updatePreference);
+fxRouter.put('/user/preference', validateFxPreference, fxRatesController.updatePreference);
 fxRouter.delete('/user/preference/:id', validateFxPreference, fxRatesController.deletePreferenceById);
 
 
