@@ -1,6 +1,7 @@
 const axios = require('axios');
 const config = require('../configg');
 const { google } = require('googleapis');
+const AppError = require('../errors/AppError');
 const OAuth2 = google.auth.OAuth2;
 require('dotenv').config()
 // Endpoint for fetching FX rates
@@ -11,7 +12,7 @@ const getFxrates = async () => {
     );
    // console.log('api key', config.fixerApiKey)
 if (response.data.success !== true) {
-      throw new Error('Error fetching FX rates');
+      throw new AppError('Error fetching FX rates');
     }
     const fxRates = response.data.rates;
   
@@ -19,7 +20,7 @@ if (response.data.success !== true) {
     return fxRates;
   } catch (error) {
     console.error('Error fetching FX rates:', error);
-    throw error; // Re-throw the error to be handled elsewhere
+    throw new AppError('Error fetching FX rates', 500); 
   }
 };
 const clientId = process.env.clientId

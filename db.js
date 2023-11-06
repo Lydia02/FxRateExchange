@@ -3,8 +3,12 @@ require('dotenv').config()
 
 module.exports = (MONGO_URI) => {
     mongoose
-    .
-    connect(MONGO_URI)
+    
+    .connect(MONGO_URI, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        
+    })
     .then(() => {
         
         console.log("Connected to MongoDB Successfully");

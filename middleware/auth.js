@@ -5,7 +5,7 @@ const ExtractJWT = require("passport-jwt").ExtractJwt;
 const localStrategy = require("passport-local").Strategy;
 require("dotenv").config();
 const userModel = require("../models/userModel");
-const ErrorHandler = require("./errorHandler"); 
+const ErrorHandler = require("../errors/AppError"); 
 
 module.exports = function (passport) {
   passport.use(

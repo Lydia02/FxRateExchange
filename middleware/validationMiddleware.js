@@ -1,5 +1,5 @@
 const Joi = require('joi');
-const ErrorHandler = require('../middleware/errorHandler'); // Import the error handler
+const { BadRequestError, CustomAPIError } = require('../errors');
 
 const userValidationSchema = Joi.object({
   firstname: Joi.string(),
@@ -9,7 +9,7 @@ const userValidationSchema = Joi.object({
 });
 
 const fxPreferenceValidationSchema = Joi.object({
-  userId: Joi.string().required(),
+  userId: Joi.string(),
   currencyPair: Joi.string().required(),
   targetRate: Joi.number().required(),
 });
@@ -20,8 +20,8 @@ const validateUser = (req, res, next) => {
 
   if (error) {
     const validationErrors = error.details.map((detail) => detail.message);
-    // Create and pass an AppError to the error handling middleware
-    return next(new ErrorHandler(validationErrors.join(', '), 400));
+    // Create and pass a BadRequestError to the error handling middleware
+    return next(new BadRequestError(validationErrors.join(', ')));
   }
 
   next();
@@ -32,8 +32,8 @@ const validateFxPreference = (req, res, next) => {
 
   if (error) {
     const validationErrors = error.details.map((detail) => detail.message);
-    // Create and pass an AppError to the error handling middleware
-    return next(new ErrorHandler(validationErrors.join(', '), 400));
+    // Create and pass a BadRequestError to the error handling middleware
+    return next(new BadRequestError(validationErrors.join(', ')));
   }
 
   next();

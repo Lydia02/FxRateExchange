@@ -1,43 +1,46 @@
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
-const ErrorHandler = require('../middleware/errorHandler');
+const { CustomAPIError } = require('../errors'); 
 
-exports.signUp = async (req, res, next) => {
-  const body = { _id: req.user._id, email: req.user.email };
+exports.signUp = async (req, res) => {
   try {
+    const body = { _id: req.user._id, email: req.user.email };
     res.json({
       message: 'Signup successful',
       user: req.user,
     });
-  } catch (err) {
-    //handling middleware
-    return next(new ErrorHandler(err.message, 500));
+  } catch (error) {
+    // Handle the error here
+    res.status(500).json({ error: error.message });
   }
 };
 
-exports.login = async (req, res, next) => {
+exports.login = async (req, res) => {
   passport.authenticate('login', async (err, user, info) => {
     try {
-      if (err) {
-        return next(err);
-      }
+      if (err) throw err;
+
       if (!user) {
-        const error = new ErrorHandler('Username or password is incorrect', 401);
-        return next(error);
+        // Use your custom BadRequestError here
+        throw new CustomAPIError('Username or password is incorrect');
       }
+
       req.login(user, { session: false }, async (error) => {
-        if (error) return next(error);
+        if (error) throw error;
+
         const body = { _id: user._id, email: user.email };
         const token = jwt.sign({ user: body }, process.env.JWT_SECRET, {
           expiresIn: '1hr',
         });
-        return res.json({
+
+        res.json({
           token: token,
           userID: req.user._id,
         });
       });
-    } catch (err) {
-      return next(new ErrorHandler(err.message, 500));
+    } catch (error) {
+      // Handle the error here
+      res.status(500).json({ error: error.message });
     }
-  })(req, res, next);
+  })(req, res);
 };
