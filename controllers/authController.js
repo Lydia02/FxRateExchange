@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
-const { CustomAPIError } = require('../errors'); // Import your custom error class
+const { CustomAPIError } = require('../errors'); 
 
 exports.signUp = async (req, res) => {
   try {

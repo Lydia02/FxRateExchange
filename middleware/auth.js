@@ -1,9 +1,11 @@
+// auth.js
+
 const JWTStrategy = require("passport-jwt").Strategy;
 const ExtractJWT = require("passport-jwt").ExtractJwt;
 const localStrategy = require("passport-local").Strategy;
 require("dotenv").config();
 const userModel = require("../models/userModel");
-const { UnauthenticatedError, AppError } = require("../errors");
+const ErrorHandler = require("../errors/AppError"); 
 
 module.exports = function (passport) {
   passport.use(
@@ -16,8 +18,8 @@ module.exports = function (passport) {
         try {
           return done(null, token.user);
         } catch (error) {
-          throw new AppError('Error', 500); 
-        }
+            throw new ErrorHandler('Error', 500); 
+          }
       }
     )
   );
@@ -41,8 +43,8 @@ module.exports = function (passport) {
           });
           return done(null, user);
         } catch (error) {
-          throw new AppError('Error', 500); 
-        }
+            throw new ErrorHandler('Error', 500); 
+          }
       }
     )
   );
@@ -59,19 +61,20 @@ module.exports = function (passport) {
           const user = await userModel.findOne({ email });
 
           if (!user) {
-            throw new UnauthenticatedError("User not found");
+            return done(null, false, { message: "User not found" });
           }
 
           const validate = await user.isValidPassword(password);
 
           if (!validate) {
-            throw new UnauthenticatedError("Wrong Password");
+            return done(null, false, { message: "Wrong Password" });
           }
 
           return done(null, user, { message: "Logged in Successfully" });
         } catch (error) {
-          throw new AppError('Error', 500); 
-        }
+            throw new ErrorHandler('Error', 500); 
+          };
+        
       }
     )
   );

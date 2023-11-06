@@ -1,9 +1,5 @@
 const Joi = require('joi');
 const { BadRequestError, CustomAPIError } = require('../errors');
-// const {
-//   CustomAPIError,{}
-//   BadRequestError,
-// } = require('../errors'); 
 
 const userValidationSchema = Joi.object({
   firstname: Joi.string(),
@@ -13,9 +9,9 @@ const userValidationSchema = Joi.object({
 });
 
 const fxPreferenceValidationSchema = Joi.object({
-  //userId: Joi.string().required(),
-  currencyPair: Joi.string(),
-  targetRate: Joi.number(),
+  userId: Joi.string(),
+  currencyPair: Joi.string().required(),
+  targetRate: Joi.number().required(),
 });
 
 const validateUser = (req, res, next) => {
