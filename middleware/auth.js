@@ -5,7 +5,7 @@ const ExtractJWT = require("passport-jwt").ExtractJwt;
 const localStrategy = require("passport-local").Strategy;
 require("dotenv").config();
 const userModel = require("../models/userModel");
-const ErrorHandler = require("../errors/AppError"); 
+const ErrorHandler = require("../errors/badRequest"); 
 
 module.exports = function (passport) {
   passport.use(
@@ -43,8 +43,9 @@ module.exports = function (passport) {
           });
           return done(null, user);
         } catch (error) {
-            throw new ErrorHandler('Error', 500); 
+            throw new ErrorHandler('This user exists', 400); 
           }
+          
       }
     )
   );

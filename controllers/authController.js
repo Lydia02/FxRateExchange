@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
-const { CustomAPIError } = require('../errors'); 
+const  CustomAPIError = require('../errors/badRequest'); 
 
 exports.signUp = async (req, res) => {
   try {
@@ -11,7 +11,7 @@ exports.signUp = async (req, res) => {
     });
   } catch (error) {
     // Handle the error here
-    res.status(500).json({ error: error.message });
+    next(new CustomAPIError('User already exists'));
   }
 };
 

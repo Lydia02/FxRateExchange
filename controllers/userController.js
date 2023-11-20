@@ -1,5 +1,5 @@
 const User = require('../models/userModel');
-const ErrorHandler = require('../middleware/errorHandler'); 
+const ErrorHandler = require('../errors/badRequest'); 
 
 const createUser = async (req, res, next) => {
   try {
@@ -23,7 +23,8 @@ const createUser = async (req, res, next) => {
       data: createdUser,
     });
   } catch (error) {
-    next(new ErrorHandler('Error creating user', 500)); 
+    throw new ErrorHandler('This user exists', 400);
+   
   }
 };
 
